@@ -13,7 +13,10 @@ public class GameController : MonoBehaviour {
 
     List<GridLayer> _gameMatrix;
 
-[SerializeField]
+    [SerializeField]
+    Transform _cameraAnchor;
+
+    [SerializeField]
 	float _moveDelay = 1.0f;
 	float _moveTimer = 0.0f;
 
@@ -175,6 +178,16 @@ public class GameController : MonoBehaviour {
     {
         if (rotModifier + posModifier == Vector3.zero || currentBlock == null)
             return;
+
+        Vector3 camAnchorEuler = _cameraAnchor.rotation.eulerAngles;
+        camAnchorEuler.x = 0;
+        camAnchorEuler.y = 90 * (int)Mathf.Round(camAnchorEuler.y / 90);
+        camAnchorEuler.z = 0;
+
+        Quaternion camRotModifier = Quaternion.Euler(camAnchorEuler);
+
+        rotModifier = camRotModifier * rotModifier;
+        posModifier = camRotModifier * posModifier;
 
         if (!IsBlocksBlocked(currentBlock, posModifier, rotModifier))
         {
